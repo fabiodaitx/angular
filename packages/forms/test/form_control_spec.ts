@@ -817,6 +817,11 @@ describe('FormControl', () => {
       expect(c.value).toBe('initial value');
     });
 
+    it('should reset a typed control if passed a FormState', () => {
+      const tc = new FormControl('foo');
+      tc.reset({value: 'bar', disabled: false});
+    });
+
     it('should clear the control value if no value is passed', () => {
       c.setValue('new value');
       expect(c.value).toBe('new value');

@@ -63,6 +63,8 @@ describe('FormArray', () => {
 
       a.insert(1, c2);
 
+      const controls = a.controls;
+
       expect(a.controls).toEqual([c1, c2, c3]);
     });
 

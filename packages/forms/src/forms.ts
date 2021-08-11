@@ -53,5 +53,5 @@ export {VERSION} from './version';
 
 export * from './form_providers';
 
-export const FormControl: FormControlCtor = FormControlClass as unknown as FormControlCtor;
+export const FormControl: FormControlCtor = FormControlClass as FormControlCtor;
 export type FormControl = FormControlClass;

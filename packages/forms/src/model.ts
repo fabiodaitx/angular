@@ -139,8 +139,10 @@ function isOptionsObj(validatorOrOpts?: ValidatorFn|ValidatorFn[]|AbstractContro
 type TypedOrUntyped<T, Typed, Untyped> = T extends never ? Untyped : Typed;
 type AnyOrUnknown<T> = TypedOrUntyped<T, unknown, any>;
 
-type ElementOf<ArrayType extends readonly unknown[]> =
+export type ElementOf<ArrayType extends readonly unknown[]> =
     (ArrayType extends readonly(infer ElementType)[] ? ElementType : never);
+
+type Foo = ElementOf<Array<FormControl<string|null>|FormControl<number>>>;
 
 /**
  * This is the base class for `FormControl`, `FormGroup`, and `FormArray`.
@@ -1151,7 +1153,6 @@ type NullableFormControl<T> = null extends T ? FormControl<T>: FormControl<null>
 
 export interface FormControlCtor {
   new(): FormControl<any>;
-  new<T>(): FormControl<FormState<T>|T|null>;
   new<T>(
       value: FormState<T>|T,
       validatorOrOpts?: ValidatorFn|ValidatorFn[]|AbstractControlOptions|null,
@@ -1378,8 +1379,10 @@ export class FormControl<T = any> extends AbstractControl<T> {
    */
   reset(this: NullableFormControl<T>): void;
   reset(this: NullableFormControl<T>, value: T|FormState<T>|undefined, options?: Object): void;
+  // TODO: The presence of FormState in these param types is causing it to show up in T at the call
+  // site for FormArray!
   reset(value: T|FormState<T>, options?: Object): void;
-  override reset(formState: FormState<T>|T|null = null, options: {
+  override reset(formState: FormState<T>|T = (null as unknown as T), options: {
     onlySelf?: boolean,
     emitEvent?: boolean
   } = {}): void {
@@ -1576,6 +1579,8 @@ export class FormGroup<T = any> extends AbstractControl<Partial<T>> {
       emitEvent: !!this.asyncValidator
     });
   }
+
+  public override readonly value!: Partial<T>;
 
   /**
    * Registers a control with the group's list of controls.
@@ -2032,7 +2037,7 @@ export class FormArray<T extends any[] = any> extends AbstractControl<T> {
    *
    */
   constructor(
-      // TODO: this type is not strict enough -- consider FormArray<Array<string>|Array<number>>
+      // TODO: type inference is not working!
       public controls: Array<AbstractControl<ElementOf<T>>>,
       validatorOrOpts?: ValidatorFn|ValidatorFn[]|AbstractControlOptions|null,
       asyncValidator?: AsyncValidatorFn|AsyncValidatorFn[]|null) {
