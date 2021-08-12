@@ -198,6 +198,14 @@ This section walks you through creating a child component, `ProductAlertsCompone
 1. Open `product-alerts.component.html` and replace the placeholder paragraph with a **Notify Me** button that appears if the product price is over $700.
 
   <code-example header="src/app/product-alerts/product-alerts.component.html" path="getting-started/src/app/product-alerts/product-alerts.component.1.html"></code-example>
+  
+1. Open `app.module.ts`, import the component. In stackblitz, sometimes you may need to reload the page.
+
+  <code-example import { ProductAlertsComponent } from './product-alerts/product-alerts.component';   imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot([{ path: '', component: ProductListComponent }])
+  ],></code-example>
 
 1. To display `ProductAlertsComponent` as a child of `ProductListComponent`, add the selector, `<app-product-alerts>` to `product-list.component.html`.
   Pass the current product as input to the component using property binding.
